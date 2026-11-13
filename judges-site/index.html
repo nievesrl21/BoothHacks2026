@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Booth Hacks · Judging</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="wordmark" aria-label="booth hacks">booth<br>hacks</p>
+    <div class="hero-meta">
+      <span class="eyebrow">Judging portal</span>
+      <h1>Score every build on the same yardstick.</h1>
+      <p>Sign in, open each team's site and rate it Strong, Adequate or Weak on five criteria, plus Prize Fit for the prizes you judge. Every score is saved the moment you submit it.</p>
+    </div>
+  </header>
+
+  <div class="notice warn" id="gate" hidden></div>
+
+  <section class="panel narrow" id="signin" hidden>
+    <h2>Judge sign-in</h2>
+    <form id="signin-form" class="stack" novalidate>
+      <div class="field"><label class="field-label" for="email">Email</label><input type="email" id="email" autocomplete="username" required></div>
+      <div class="field"><label class="field-label" for="password">Password</label><input type="password" id="password" autocomplete="current-password" required></div>
+      <div class="notice" id="signin-msg" hidden></div>
+      <div class="actions"><button class="btn" type="submit" id="signin-btn">Sign in</button></div>
+      <p class="hint">Forgot your password? Ask the organizer to reset it.</p>
+    </form>
+  </section>
+
+  <div class="judge-bar" id="judge-bar" hidden>
+    <div>Judging as <strong id="judge-name"></strong> <span class="pill" id="admin-pill" hidden>Organizer</span></div>
+    <button class="btn ghost sm" type="button" id="signout">Sign out</button>
+  </div>
+
+  <main class="panel" id="judge-panel" hidden>
+    <div class="stack">
+      <div class="panel-head"><h2>Projects</h2><span class="hint" id="live-state">Live</span></div>
+      <p class="small" id="my-prizes"></p>
+      <div class="chips" id="filters" role="group" aria-label="Filter by prize"></div>
+      <div class="progress">
+        <div class="sub-label"><span class="small" id="progress-text"></span><span class="hint">3 Strong · 2 Adequate · 1 Weak · every total is out of 300</span></div>
+        <div class="bar"><i id="progress-bar" style="width:0%"></i></div>
+      </div>
+    </div>
+    <div class="projects" id="projects"></div>
+  </main>
+
+  <section class="panel" id="admin" hidden>
+    <div class="panel-head"><h2>Organizer console</h2><span class="console-badge">Organizers only</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="results">Results</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="subs">Submissions</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="teams">Teams &amp; codes</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="prizes">Prizes</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="criteria">Criteria</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="judges">Judges</button>
+    </div>
+
+    <div class="stack" data-pane="results">
+      <div class="panel-head">
+        <label class="small" for="res-prize">Leaderboard for
+          <select id="res-prize" style="width:auto;display:inline-block;margin-left:6px"></select></label>
+        <div class="actions">
+          <button class="btn ghost sm" type="button" id="dl-board">Download leaderboard (CSV)</button>
+          <button class="btn sm" type="button" id="dl-scores">Download all scores (CSV)</button>
+        </div>
+      </div>
+      <p class="hint" id="res-judges"></p>
+      <div class="table-wrap"><table><thead id="board-head"></thead><tbody id="board-body"></tbody></table></div>
+      <p class="hint">Projects flagged <span class="pill danger">No working demo</span> stay ranked so you can decide in person. Hover the flag to see which judges raised it.</p>
+      <div class="sub-label"><h3>Every score submitted</h3><span class="hint" id="raw-count"></span></div>
+      <div class="table-wrap"><table><thead id="raw-head"></thead><tbody id="raw-body"></tbody></table></div>
+    </div>
+
+    <div class="stack" data-pane="subs" hidden>
+      <p class="hint">Submissions arrive here live from the student site. Removing one hides it from judges; its scores stay in the database.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Team</th><th>Product</th><th>Prizes</th><th>Scores</th><th>Updated</th><th></th></tr></thead>
+        <tbody id="subs-body"></tbody></table></div>
+      <div class="notice" id="subs-msg" hidden></div>
+    </div>
+
+    <div class="stack" data-pane="teams" hidden>
+      <div class="switch" id="reg-switch" hidden>
+        <div><strong>Team registration</strong><br><span class="hint" id="reg-state"></span></div>
+        <button class="btn sm" type="button" id="reg-toggle"></button>
+      </div>
+      <div class="switch" id="gallery-switch" hidden>
+        <div><strong>Project gallery</strong><br><span class="hint" id="gallery-state"></span></div>
+        <button class="btn sm" type="button" id="gallery-toggle"></button>
+      </div>
+      <div class="notice" id="reg-msg" hidden></div>
+      <div class="sub-label"><h3>Registered teams</h3>
+        <div class="actions"><span class="hint" id="members-count"></span><button class="btn ghost sm" type="button" id="dl-teams">Download teams (CSV)</button></div></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Team</th><th>Code</th><th>Members</th><th>Registered</th><th>Submitted</th></tr></thead>
+        <tbody id="members-body"></tbody></table></div>
+      <div class="stack">
+        <div><h3>Edit teams &amp; codes</h3>
+          <p class="hint">Rename teams, change codes, or add teams yourself. Students need their code to submit or update their project. Removing a team also deletes its members, submission and scores.</p></div>
+        <div id="ed-teams" class="stack"></div>
+      </div>
+    </div>
+    <div class="stack" data-pane="prizes" hidden>
+      <div><h3>Who judges each prize</h3>
+        <p class="hint">Tick the judges for each category prize and pick a lead. Those judges rate Prize Fit, and only their scores count toward that prize. Best Overall always uses every judge. Changes save instantly.</p></div>
+      <div id="pj-list" class="stack"></div>
+      <div class="notice" id="pj-msg" hidden></div>
+      <div><h3>Edit prizes</h3>
+        <p class="hint">Prizes appear as checkboxes on the student site and as filters for judges. The Prize Fit text is what judges see on the 3 / 2 / 1 buttons. With a Prize Fit weight of 30 and the default criteria, Prize Fit is 30% of a category score.</p></div>
+      <div id="ed-prizes" class="stack"></div>
+    </div>
+    <div class="stack" data-pane="criteria" hidden>
+      <p class="hint">Judges rate each criterion 3 Strong, 2 Adequate or 1 Weak. Best Overall uses the first weight; category prizes use the second weight plus Prize Fit. Weights don't need to add up to 100: every total is scaled to 300. Totals recalculate if you change them.</p>
+      <div id="ed-criteria" class="stack"></div>
+    </div>
+
+    <div class="stack" data-pane="judges" hidden>
+      <div class="notice">To add a judge: <b>1.</b> In Supabase, open Authentication → Users → Add user, and create their login with their email and a password. <b>2.</b> Add them here with the same email. <b>3.</b> In the Prizes tab, tick them on the prizes they judge. Then send them this site's link with their email and password.</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Prizes</th><th>Scores</th><th></th></tr></thead>
+        <tbody id="judges-body"></tbody></table></div>
+      <form id="add-judge" class="stack" novalidate>
+        <h3>Add a judge</h3>
+        <div class="grid-2">
+          <div class="field"><label class="field-label" for="nj-name">Name</label><input type="text" id="nj-name" maxlength="80" placeholder="e.g. Prof. Ana Ruiz"></div>
+          <div class="field"><label class="field-label" for="nj-email">Email of their login</label><input type="email" id="nj-email" placeholder="name@chicagobooth.edu"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="nj-admin"> Also an organizer (sees this console and all results)</label>
+        <div class="actions"><button class="btn sm" type="submit">Add judge</button></div>
+      </form>
+      <div class="notice" id="judges-msg" hidden></div>
+    </div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

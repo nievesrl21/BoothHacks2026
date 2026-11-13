@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Booth Hacks · Submit your project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="wordmark" aria-label="booth hacks">booth<br>hacks</p>
+    <div class="hero-meta">
+      <span class="eyebrow">Project submissions</span>
+      <h1>Ship it. Then submit it here.</h1>
+      <p>Send your team's live link, pick the prizes you're going for, and tell the judges what you built.</p>
+    </div>
+  </header>
+
+  <div class="notice warn" id="gate" hidden></div>
+
+  <nav class="steps" aria-label="Steps">
+    <button type="button" class="step" id="step-register" aria-pressed="true" data-step="register"><span class="step-n">1</span>Register your team</button>
+    <button type="button" class="step" id="step-submit" aria-pressed="false" data-step="submit"><span class="step-n">2</span>Submit your project</button>
+    <button type="button" class="step" id="step-gallery" aria-pressed="false" data-step="gallery" hidden><span class="step-n" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect width="5" height="5" rx="1"/><rect x="7" width="5" height="5" rx="1"/><rect y="7" width="5" height="5" rx="1"/><rect x="7" y="7" width="5" height="5" rx="1"/></svg></span>Project gallery</button>
+  </nav>
+
+  <section class="panel" id="register-panel">
+    <div class="panel-head">
+      <h2>Register your team</h2>
+      <span class="hint">One person registers for the whole team. 1 to 5 people.</span>
+    </div>
+    <div class="notice warn" id="reg-closed" hidden>Team registration is closed. If your team still needs to register, contact the organizers.</div>
+
+    <form id="reg-form" class="stack" novalidate>
+      <div class="field">
+        <label class="field-label" for="reg-team">Team name</label>
+        <input type="text" id="reg-team" maxlength="60" placeholder="e.g. Hyde Park Hackers" autocomplete="off">
+      </div>
+      <fieldset class="field">
+        <legend class="field-label">Team members</legend>
+        <div class="rows" id="members"></div>
+        <div class="actions"><button type="button" class="btn ghost sm" id="add-member">Add teammate</button><span class="hint" id="member-count"></span></div>
+      </fieldset>
+      <div class="notice" id="reg-msg" hidden></div>
+      <div class="actions"><button class="btn" type="submit" id="reg-btn" disabled>Register team</button></div>
+    </form>
+
+    <div class="registered stack" id="reg-done" hidden>
+      <div>
+        <span class="eyebrow-dark">You're registered</span>
+        <h3 id="done-team"></h3>
+      </div>
+      <div class="code-card">
+        <div><span class="hint">Your team code</span><b class="team-code" id="done-code"></b></div>
+        <button type="button" class="btn ghost sm" id="copy-code">Copy code</button>
+      </div>
+      <p class="small">Save this code and share it with your teammates. You'll need it to submit your project and to make changes later. If you lose it, ask the organizers.</p>
+      <div class="actions">
+        <button type="button" class="btn" id="go-submit">Go to project submission</button>
+        <button type="button" class="btn ghost" id="reg-another">Register another team</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="panel" id="submit-panel" hidden>
+    <div class="panel-head">
+      <h2 id="form-title">Submit your project</h2>
+      <span class="hint">One submission per team. Submitting again replaces it.</span>
+    </div>
+    <div class="status" id="mine-status" hidden></div>
+
+    <form id="form" class="stack" novalidate>
+      <div class="grid-2">
+        <div class="field">
+          <label class="field-label" for="team">Team name</label>
+          <select id="team"><option value="">Loading teams…</option></select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="code">Team code</label>
+          <input type="text" id="code" class="code-input" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. MAROON-4821">
+          <span class="hint">Your organizer gave each team a code. <button type="button" class="btn link small" id="load-btn">Load our current submission</button></span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="project">Product name</label>
+        <input type="text" id="project" maxlength="80" placeholder="e.g. LeaseLens" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="url">Link to your website</label>
+        <input type="url" id="url" placeholder="https://your-project.vercel.app" autocomplete="off" inputmode="url">
+        <span class="hint">Make sure it's public. Judges will open it in their browser.</span>
+      </div>
+
+      <fieldset class="field">
+        <legend class="field-label">Prizes you're competing for</legend>
+        <div class="prizes" id="prizes"><p class="hint">Loading prizes…</p></div>
+      </fieldset>
+
+      <div class="field">
+        <label class="field-label" for="desc">Brief description</label>
+        <textarea id="desc" maxlength="600" placeholder="What problem does it solve, who is it for, and how does it work?"></textarea>
+        <span class="counter" id="desc-count">0 / 600</span>
+      </div>
+
+      <label class="confidential" for="confidential">
+        <input type="checkbox" id="confidential">
+        <div><strong>Keep our project confidential</strong>
+          <span>Only judges and organizers will see it. It won't appear in the project gallery.</span></div>
+      </label>
+
+      <div class="notice" id="form-msg" hidden></div>
+      <div class="actions">
+        <button class="btn" type="submit" id="submit-btn" disabled>Submit project</button>
+      </div>
+    </form>
+  </main>
+
+  <section class="panel" id="gallery-panel" hidden>
+    <div class="panel-head">
+      <h2>Project gallery</h2>
+      <button type="button" class="btn ghost sm" id="gallery-refresh">Refresh</button>
+    </div>
+    <div class="chips" id="gallery-filters" role="group" aria-label="Filter by prize"></div>
+    <div class="gallery" id="gallery"><p class="hint">Loading projects…</p></div>
+    <p class="hint" id="gallery-note" hidden></p>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
